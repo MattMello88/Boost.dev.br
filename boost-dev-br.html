@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>boost.dev.br — Impulsione sua visão como dev com IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-black: #0A0A0A;
+    --brand-orange: #FF6B00;
+    --brand-orange-hover: #E55A00;
+    --brand-orange-light: #FF8C33;
+    --brand-orange-pale: #FFA559;
+    --brand-orange-bg: #1A0A00;
+    --surface-primary: #111111;
+    --surface-secondary: #1A1A1A;
+    --surface-tertiary: #2A2A2A;
+    --surface-border: #333333;
+    --text-primary: #F5F5F5;
+    --text-secondary: #A0A0A0;
+    --text-disabled: #555555;
+    --gradient-brand: linear-gradient(135deg, #FF6B00 0%, #E55A00 100%);
+    --gradient-hero: linear-gradient(135deg, #0A0A0A 60%, #1A0A00 100%);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--brand-black);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 60px;
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,107,0,0.12);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .nav-logo span { color: var(--brand-orange); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .nav-cta {
+    background: var(--brand-orange);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 22px;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .nav-cta:hover { background: var(--brand-orange-hover); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,107,0,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,0,0.07) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 15%; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse at center, rgba(255,107,0,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    max-width: 860px;
+    animation: fadeUp 0.9s ease both;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand-orange-bg);
+    border: 1px solid rgba(255,107,0,0.3);
+    color: var(--brand-orange-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 100px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--brand-orange);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 9vw, 120px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-title em {
+    display: block;
+    color: var(--brand-orange);
+    font-style: normal;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(17px, 2.2vw, 20px);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 640px;
+    margin-bottom: 52px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .btn-primary {
+    background: var(--brand-orange);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 16px 36px;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(255,107,0,0.25);
+  }
+
+  .btn-primary:hover {
+    background: var(--brand-orange-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 40px rgba(255,107,0,0.4);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 15px;
+    padding: 16px 36px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid var(--surface-border);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--brand-orange);
+    color: var(--text-primary);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 2;
+    animation: fadeUp 1s 0.8s ease both;
+  }
+
+  .hero-scroll span {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-disabled);
+  }
+
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 2px solid var(--text-disabled);
+    border-bottom: 2px solid var(--text-disabled);
+    transform: rotate(45deg);
+    animation: bounceDown 1.6s infinite;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative; z-index: 2;
+    background: var(--surface-primary);
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+    padding: 28px 60px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--brand-orange);
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+
+  /* SECTION */
+  section {
+    position: relative; z-index: 2;
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--brand-orange);
+    background: var(--brand-orange-bg);
+    border: 1px solid rgba(255,107,0,0.25);
+    padding: 6px 14px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-title em {
+    color: var(--brand-orange);
+    font-style: normal;
+  }
+
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 580px;
+  }
+
+  /* COURSES GRID */
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 28px;
+    margin-top: 60px;
+  }
+
+  .course-card {
+    position: relative;
+    background: var(--surface-secondary);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .course-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gradient-brand);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .course-card:hover {
+    border-color: rgba(255,107,0,0.4);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(255,107,0,0.1);
+  }
+
+  .course-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .course-card.featured {
+    border-color: rgba(255,107,0,0.3);
+    background: linear-gradient(160deg, #1A1A1A 0%, #1A0A00 100%);
+  }
+
+  .course-card.featured::before {
+    transform: scaleX(1);
+  }
+
+  .course-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-orange);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .course-icon {
+    width: 56px; height: 56px;
+    background: var(--brand-orange-bg);
+    border: 1px solid rgba(255,107,0,0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+  }
+
+  .course-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--brand-orange-bg);
+    color: var(--brand-orange-light);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,107,0,0.2);
+    align-self: flex-start;
+  }
+
+  .course-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .course-name span { color: var(--brand-orange); }
+
+  .course-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .course-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .course-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .course-features li::before {
+    content: '→';
+    color: var(--brand-orange);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .course-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    border-top: 1px solid var(--surface-border);
+    margin-top: auto;
+  }
+
+  .course-url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-disabled);
+    letter-spacing: 0.03em;
+  }
+
+  .course-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand-orange);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+
+  .course-btn:hover { background: var(--brand-orange-hover); }
+
+  .course-btn svg {
+    transition: transform 0.2s;
+  }
+
+  .course-card:hover .course-btn svg {
+    transform: translateX(3px);
+  }
+
+  /* WHY BOOST */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 56px;
+  }
+
+  .feature-item {
+    background: var(--surface-secondary);
+    border: 1px solid var(--surface-border);
+    border-radius: 10px;
+    padding: 32px 28px;
+    transition: border-color 0.2s;
+  }
+
+  .feature-item:hover {
+    border-color: rgba(255,107,0,0.3);
+  }
+
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* MANIFESTO */
+  .manifesto-section {
+    position: relative; z-index: 2;
+    background: var(--surface-primary);
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+    padding: 100px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .manifesto-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 300px;
+    background: radial-gradient(ellipse at top, rgba(255,107,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .manifesto-content {
+    position: relative; z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .manifesto-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 1.05;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .manifesto-quote em {
+    color: var(--brand-orange);
+    font-style: normal;
+  }
+
+  .manifesto-text {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 620px;
+    margin: 0 auto 40px;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 2;
+    background: var(--brand-black);
+    border-top: 1px solid var(--surface-border);
+    padding: 60px 60px 40px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .footer-brand-name span { color: var(--brand-orange); }
+
+  .footer-brand-tagline {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 240px;
+    line-height: 1.6;
+  }
+
+  .footer-links-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--brand-orange); }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--surface-border);
+    font-size: 13px;
+    color: var(--text-disabled);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes bounceDown {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(5px); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 18px 24px; }
+    .nav-links { display: none; }
+    section { padding: 72px 24px; }
+    .stats-bar { padding: 28px 24px; gap: 40px; }
+    .manifesto-section { padding: 72px 24px; }
+    footer { padding: 48px 24px 32px; }
+    .footer-inner { flex-direction: column; gap: 40px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">boost<span>.dev</span></a>
+  <ul class="nav-links">
+    <li><a href="#cursos">Cursos</a></li>
+    <li><a href="#sobre">Por que boost</a></li>
+    <li><a href="#manifesto">Manifesto</a></li>
+  </ul>
+  <a href="#cursos" class="nav-cta">Ver Cursos</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      Cursos para devs que constroem o futuro com IA
+    </div>
+
+    <h1 class="hero-title">
+      Eleve seu<br>
+      <em>nível como dev</em><br>
+      com IA
+    </h1>
+
+    <p class="hero-subtitle">
+      A boost.dev.br reúne cursos práticos e diretos ao ponto para programadores que querem dominar Inteligência Artificial — do código legado ao produto completo.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#cursos" class="btn-primary">Explorar Cursos</a>
+      <a href="#manifesto" class="btn-ghost">Nossa filosofia →</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-number">3</div>
+    <div class="stat-label">Cursos Disponíveis</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">100%</div>
+    <div class="stat-label">Foco em IA</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">0 a 1</div>
+    <div class="stat-label">Do conceito ao produto</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">Prático</div>
+    <div class="stat-label">Sem enrolação</div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<section id="cursos">
+  <div class="section-tag">// cursos</div>
+  <h2 class="section-title">Escolha seu<br><em>próximo nível</em></h2>
+  <p class="section-subtitle">Três trilhas distintas. Uma missão: fazer você pensar e construir de forma diferente usando IA.</p>
+
+  <div class="courses-grid">
+
+    <!-- Curso 1: Delphi + IA -->
+    <a class="course-card reveal" href="https://delphi.boost.dev.br" target="_blank">
+      <div class="course-number">01 / 03</div>
+      <div class="course-icon">⚡</div>
+      <div class="course-tag">Delphi · IA</div>
+      <h3 class="course-name">Delphi <span>+ IA</span></h3>
+      <p class="course-desc">
+        Modernize sistemas legados em Delphi integrando IA real na sua stack. Aprenda a conectar LLMs, automatizar fluxos e transformar código antigo em ferramentas inteligentes — sem abandonar a plataforma que já funciona.
+      </p>
+      <ul class="course-features">
+        <li>Integração com LLMs (OpenAI, Claude e outros)</li>
+        <li>Automação inteligente de processos em Delphi</li>
+        <li>Projetos práticos e aplicáveis imediatamente</li>
+        <li>Para devs que já conhecem Delphi e querem mais</li>
+      </ul>
+      <div class="course-cta">
+        <span class="course-url">delphi.boost.dev.br</span>
+        <span class="course-btn">
+          Acessar
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Curso 2: Prompt Master -->
+    <a class="course-card featured reveal" href="https://promptmaster.boost.dev.br" target="_blank">
+      <div class="course-number">02 / 03</div>
+      <div class="course-icon">🧠</div>
+      <div class="course-tag">IA · Produto · MVP</div>
+      <h3 class="course-name">Prompt <span>Master</span></h3>
+      <p class="course-desc">
+        Do prompt à entrega: aprenda a construir MVPs completos usando IA como co-piloto. Estratégias avançadas de prompting para criar produtos reais em horas, não semanas — com foco em resultado e autonomia total.
+      </p>
+      <ul class="course-features">
+        <li>Engenharia de Prompt de alto nível</li>
+        <li>Arquitetura de produto com IA do zero</li>
+        <li>Deploy e entrega: do zero ao ar em horas</li>
+        <li>Workflows com Claude, GPT e ferramentas no-code</li>
+      </ul>
+      <div class="course-cta">
+        <span class="course-url">promptmaster.boost.dev.br</span>
+        <span class="course-btn">
+          Acessar
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Curso 3: Landing Page Pro -->
+    <a class="course-card reveal" href="https://landingpage-curso-landingpage-pro.boost.dev.br" target="_blank">
+      <div class="course-number">03 / 03</div>
+      <div class="course-icon">🚀</div>
+      <div class="course-tag">Landing Page · IA · Deploy</div>
+      <h3 class="course-name">LandingPage <span>Pro</span></h3>
+      <p class="course-desc">
+        Crie landing pages profissionais com IA e publique por quase nada. Aprenda a usar ferramentas de IA para montar páginas de alta conversão — design, copy e deploy — sem precisar de agência ou infraestrutura cara.
+      </p>
+      <ul class="course-features">
+        <li>Design e copy com IA do zero ao pixel perfeito</li>
+        <li>Hospedagem e domínio por quase nada</li>
+        <li>Otimização para conversão e SEO</li>
+        <li>Publicação em produção no mesmo dia</li>
+      </ul>
+      <div class="course-cta">
+        <span class="course-url">landingpage-curso-landingpage-pro.boost.dev.br</span>
+        <span class="course-btn">
+          Acessar
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- WHY BOOST -->
+<section id="sobre">
+  <div class="section-tag">// por que boost</div>
+  <h2 class="section-title">Não é mais um<br><em>cursinho de IA</em></h2>
+  <p class="section-subtitle">A boost.dev.br foi criada por devs para devs que querem sair do lugar e construir coisas reais com IA.</p>
+
+  <div class="features-grid">
+    <div class="feature-item reveal">
+      <span class="feature-icon">🎯</span>
+      <h3 class="feature-title">Direto ao ponto</h3>
+      <p class="feature-desc">Zero teoria inútil. Cada aula é construída em torno de um problema real que você vai resolver com IA.</p>
+    </div>
+    <div class="feature-item reveal">
+      <span class="feature-icon">⚙️</span>
+      <h3 class="feature-title">Aplicado na prática</h3>
+      <p class="feature-desc">Os projetos dos cursos são extraídos de situações reais. Você sai do curso com algo funcionando.</p>
+    </div>
+    <div class="feature-item reveal">
+      <span class="feature-icon">🧭</span>
+      <h3 class="feature-title">Visão expandida</h3>
+      <p class="feature-desc">Além das ferramentas, você aprende a pensar diferente — IA como alavanca, não como muleta.</p>
+    </div>
+    <div class="feature-item reveal">
+      <span class="feature-icon">🔗</span>
+      <h3 class="feature-title">Stack moderno</h3>
+      <p class="feature-desc">De Delphi legacy a LLMs de ponta: você aprende a conectar o que já existe ao que está chegando.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<div class="manifesto-section" id="manifesto">
+  <div class="manifesto-content reveal">
+    <div class="section-tag" style="margin: 0 auto 24px;">// manifesto</div>
+    <h2 class="manifesto-quote">
+      A IA não vai<br>
+      <em>substituir devs.</em><br>
+      Mas devs com IA<br>
+      vão substituir<br>
+      <em>devs sem IA.</em>
+    </h2>
+    <p class="manifesto-text">
+      A boost.dev.br nasceu de uma convicção simples: programadores que aprendem a usar IA como ferramenta estratégica têm uma vantagem absurda. Nossos cursos existem para dar essa vantagem a você — agora.
+    </p>
+    <a href="#cursos" class="btn-primary">Comece hoje →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">boost<span>.dev</span></div>
+      <p class="footer-brand-tagline">Impulsionando programadores com inteligência artificial.</p>
+    </div>
+    <div>
+      <div class="footer-links-title">Cursos</div>
+      <ul class="footer-links">
+        <li><a href="https://delphi.boost.dev.br" target="_blank">Delphi + IA</a></li>
+        <li><a href="https://promptmaster.boost.dev.br" target="_blank">Prompt Master</a></li>
+        <li><a href="https://landingpage-curso-landingpage-pro.boost.dev.br" target="_blank">LandingPage Pro</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-links-title">Navegação</div>
+      <ul class="footer-links">
+        <li><a href="#cursos">Cursos</a></li>
+        <li><a href="#sobre">Por que boost</a></li>
+        <li><a href="#manifesto">Manifesto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 boost.dev.br — Todos os direitos reservados.</span>
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--brand-orange);">// built with 🤖 + ☕</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Nav active scroll
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(10,10,10,0.97)';
+    } else {
+      nav.style.background = 'rgba(10,10,10,0.88)';
+    }
+  });
+</script>
+</body>
+</html>
